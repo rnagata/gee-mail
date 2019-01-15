@@ -1,18 +1,201 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<script src="js/mail-generator.js"></script>
 		<link href="css/style.css" rel="stylesheet" media="screen">
     <script>
       window.onload = function(){
-        // ALL OF YOUR JAVASCRIPT CODE SHOULD GO HERE. 
-        // We have to use window.onload so your JavaScript doesn't execute until the page has loaded and all HTML has been downloaded to your browser
-        
+
+      	let messageDetailsMax = 3;
+      	let messageTable = document.getElementById('messageList');
+      	let dateText;
+      	let dateMonth;
+      	let dateDay;
+      	let dateYear;
+      	let inboxButton = document.createElement("BUTTON");
+      	let messageAlreadyOpen = false;
+      	let openMessageBodyRow;
+
+      	inboxButton.innerHTML = "Inbox";
+      	inboxButton.onclick = function(){DrawTable()};
+      	document.getElementById('inboxButton').appendChild(inboxButton);
+      	document.getElementById('inboxCount').innerHTML = window.geemails.length;
+        window.setInterval(AddNewMail, 30000);
+        DrawMessageTableHeaders();
+        DrawTable();
+
+        function DrawMessageTableHeaders(){
+        	let row = messageTable.insertRow(0);
+        	const dateHeader = document.createElement("TH");
+			const senderHeader = document.createElement("TH");
+			const subjectHeader = document.createElement("TH");
+			const deleteHeader = document.createElement("TH");
+			dateHeader.innerHTML = "Date";
+			senderHeader.innerHTML = "Sender";
+			subjectHeader.innerHTML = "Subject";
+			deleteHeader.innerHTML = " ";
+			dateHeader.id = "dateHeader";
+			senderHeader.id = "senderHeader";
+			subjectHeader.id = "subjectHeader";
+			row.appendChild(dateHeader);
+			row.appendChild(senderHeader);
+			row.appendChild(subjectHeader);
+			row.appendChild(deleteHeader);
+        }
+
+        function DrawTable(){
+        	if (messageTable.rows.length > 1){
+        		console.log("there are " + (messageTable.rows.length-1) + " additional rows");
+        		for (let counter = messageTable.rows.length-1; counter > 0; counter--){
+        			console.log(counter);
+        			messageTable.deleteRow(counter);
+        		}
+        	}
+        	console.log("there are " + geemails.length + " existing mails");
+        	for (let rowCounter = 0; rowCounter < geemails.length; rowCounter++)
+        	{
+    			row = messageTable.insertRow(rowCounter+1);
+    			const messageCell = document.createElement("TD");
+    			const deleteCell = document.createElement("TD");
+    			const messageButton = document.createElement("button");
+    			const deleteButton = document.createElement("button");
+    			dateText = document.createElement("H4");
+    			let senderText = document.createElement("H4");
+    			let subjectText = document.createElement("H4");
+    			let deleteText = document.createElement("H4");
+    			// Adjust Cell details
+    			messageCell.colSpan = 3;
+    			deleteCell.colSpan = 1;
+    			messageCell.id = "messageCell";
+    			deleteCell.id = "deleteCell";
+    			// Adjust Button details
+    			messageButton.onclick = function(){ShowMessageBody(rowCounter, rowCounter+1)};
+    			deleteButton.onclick = function(){EmptyFunction()};
+    			messageButton.id = "messageButton";
+    			deleteButton.id = "deleteButton";
+    			// Adjust Label details
+    			dateText.id = "messageButtonDate";
+    			senderText.id = "messageButtonSender";
+    			subjectText.id = "messageButtonSubject";
+    			deleteText.id = "deleteButtonText";
+    			dateMonth = geemails[rowCounter].date.getMonth();
+    			dateDay = geemails[rowCounter].date.getDate();
+    			dateYear = geemails[rowCounter].date.getFullYear();
+    			console.log(rowCounter);
+    			FormatMessageDate();
+    			//dateText.innerHTML = geemails[rowCounter].date;
+    			senderText.innerHTML = geemails[rowCounter].sender;
+    			subjectText.innerHTML = geemails[rowCounter].subject;
+    			deleteText.innerHTML = "Delete";
+    			// Apply Cell objects
+    			row.appendChild(messageCell);
+    			row.appendChild(deleteCell);
+    			// Apply Button objects
+    			messageCell.appendChild(messageButton);
+    			deleteCell.appendChild(deleteButton);
+    			// Apply Label objects
+    			messageButton.appendChild(dateText);
+    			messageButton.appendChild(senderText);
+    			messageButton.appendChild(subjectText);
+    			deleteButton.appendChild(deleteText);
+        	}
+        }
+
+		function FormatMessageDate(){
+			switch (dateMonth){
+				case 0:
+					dateText.innerHTML = "Jan";
+					break;
+				case 1:
+					dateText.innerHTML = "Feb";
+					break;
+				case 2:
+					dateText.innerHTML = "Mar";
+					break;
+				case 3:
+					dateText.innerHTML = "Apr";
+					break;
+				case 4:
+					dateText.innerHTML = "May";
+					break;
+				case 5:
+					dateText.innerHTML = "Jun";
+					break;
+				case 6:
+					dateText.innerHTML = "Jul";
+					break;
+				case 7:
+					dateText.innerHTML = "Aug";
+					break;
+				case 8:
+					dateText.innerHTML = "Sep";
+					break;
+				case 9:
+					dateText.innerHTML = "Oct";
+					break;
+				case 10:
+					dateText.innerHTML = "Nov";
+					break;
+				case 11:
+					dateText.innerHTML = "Dec";
+					break;
+				default:
+					dateText.innerHTML = "Bad Month";
+					break;
+        	}
+        	dateText.innerHTML += " ";
+        	dateText.innerHTML += dateDay;
+        	dateText.innerHTML += " ";
+        	dateText.innerHTML += dateYear; 
+		}
+
+		function ShowMessageBody(gmIndex, trIndex){
+			console.log("messageOpen is: " + messageAlreadyOpen);
+			console.log("requesting message");
+			console.log("contents would be: " + geemails[gmIndex].body);
+			//When no message has been opened
+			if (messageAlreadyOpen === false){
+				let bodyRow = messageTable.insertRow(trIndex+1);
+				let singleCell = bodyRow.insertCell(0);
+				singleCell.colSpan = 3;
+				singleCell.innerHTML = geemails[gmIndex].body;
+				openMessageBodyRow = trIndex+1;
+				messageAlreadyOpen = true;
+			} else {
+				let bodyRow = messageTable.deleteRow(openMessageBodyRow);
+				bodyRow = messageTable.insertRow(trIndex+1);
+				let singleCell = bodyRow.insertCell(0);
+				singleCell.colSpan = 3;
+				singleCell.innerHTML = geemails[gmIndex].body;
+				openMessageBodyRow = trIndex+1;
+			}
+		}
+
+		function AddNewMail(){
+			let newMessage = getNewMessage();
+			geemails.push(newMessage);
+			document.getElementById('inboxCount').innerHTML = window.geemails.length;
+		}
       };
     </script>
 	</head>
 	<body>
 		<div class="container" id="main">
-			Build Me!
+			<div class = "banner">
+				<h1>GeeMail</h1>
+			</div>
+			<div class = "bottomRow">
+				<div class = "column view">
+					<table id = "messageList">
+					</table>
+				</div>
+				<div class = "column nav">
+					
+					<div id = "inboxButton"></div>
+					
+					<h3 id = "inboxCount"></h3>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
