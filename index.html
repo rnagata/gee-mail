@@ -95,69 +95,53 @@
 		function FormatMessageDate(month, day, year, hours, minutes)
 		{
 			let formattedDate;
-			const nowDate = new Date();
-			if (year === nowDate.getFullYear() && month === nowDate.getMonth() && day === nowDate.getDate())
+			switch (month)
 			{
-				formattedDate = hours.toString(); 
-				if (minutes < 10){
-					formattedDate += ":0";
-					formattedDate += minutes.toString();
-				} else {
-					formattedDate += ":";
-					formattedDate += minutes.toString();
-				}
-				return formattedDate;
-			} 
-			else 
-			{
-				switch (month)
-				{
-					case 0:
-						formattedDate = "Jan";
-						break;
-					case 1:
-						formattedDate = "Feb";
-						break;
-					case 2:
-						formattedDate = "Mar";
-						break;
-					case 3:
-						formattedDate = "Apr";
-						break;
-					case 4:
-						formattedDate = "May";
-						break;
-					case 5:
-						formattedDate = "Jun";
-						break;
-					case 6:
-						formattedDate = "Jul";
-						break;
-					case 7:
-						formattedDate = "Aug";
-						break;
-					case 8:
-						formattedDate = "Sep";
-						break;
-					case 9:
-						formattedDate = "Oct";
-						break;
-					case 10:
-						formattedDate = "Nov";
-						break;
-					case 11:
-						formattedDate = "Dec";
-						break;
-					default:
-						formattedDate = "Bad Month";
-						break;
-	        	}
-	        	formattedDate += " ";
-	        	formattedDate += day;
-	        	formattedDate += ", ";
-	        	formattedDate += year; 
-	        	return formattedDate;
-		    }
+				case 0:
+					formattedDate = "Jan";
+					break;
+				case 1:
+					formattedDate = "Feb";
+					break;
+				case 2:
+					formattedDate = "Mar";
+					break;
+				case 3:
+					formattedDate = "Apr";
+					break;
+				case 4:
+					formattedDate = "May";
+					break;
+				case 5:
+					formattedDate = "Jun";
+					break;
+				case 6:
+					formattedDate = "Jul";
+					break;
+				case 7:
+					formattedDate = "Aug";
+					break;
+				case 8:
+					formattedDate = "Sep";
+					break;
+				case 9:
+					formattedDate = "Oct";
+					break;
+				case 10:
+					formattedDate = "Nov";
+					break;
+				case 11:
+					formattedDate = "Dec";
+					break;
+				default:
+					formattedDate = "Bad Month";
+					break;
+        	}
+        	formattedDate += " ";
+        	formattedDate += day;
+        	formattedDate += ", ";
+        	formattedDate += year; 
+        	return formattedDate;
 		}
 
 		function ShowMessageBody(index, messageRowID)
