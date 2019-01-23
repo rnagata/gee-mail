@@ -1,3 +1,6 @@
+/* "." or full stop for class
+*/
+
 h1{
 	color: white;
 	background-color: blue;
@@ -7,148 +10,132 @@ h1{
 	font-variant: small-caps;
 	margin: 0px;
 }
+
+h2 {
+	margin-top: 10px;
+	margin-left: 20px;
+	margin-bottom: 10px;
+	font-family: "Arial", Gadget, sans-serif;
+	font-variant: small-caps;
+}
+
 h3{
-	padding: 0px;
+	margin-top: 10px;
+	margin-left: 20px;
+	margin-bottom: 10px;
+	font-family: "Arial", Gadget, sans-serif;
+	font-variant: small-caps;
 }
 
 h4{
-	display: inline-block;
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-
-th{
-	
-	text-align: center;
+	margin-top: 10px;
+	margin-left: 20px;
+	margin-bottom: 10px;
 	font-family: "Arial", Gadget, sans-serif;
-	font-weight: normal;
-	font-style: normal;
 	font-variant: small-caps;
 }
 
-#dateHeader{
-	width:15%;
-	padding: 10px;
-	text-align: left;
-}
-
-#senderHeader{
-	width:20%;
-	padding: 10px;
-	text-align: left;
-}
-
-#subjectHeader{
-	width:65%;
-	padding: 10px;
-	text-align: left;
-}
-
-#bottomRow{
-	margin: 0px;
-	width: 100%;
-}
-
-
-#messageList{
-	background-color: PowderBlue;
+table{
+	border-spacing: 0px;
+	background-color: transparent;
 	width: 100%
 }
 
-#messageCell:{
-	text-align: center;
-	background-color: PowerBlue;
-	padding: 0px;
+tr {
+
 }
 
-#messageButton{
-	width: 100%;
-	height: 100%;
-	border: none;
-	border-radius: 4px;
-	background-color: white;
-	padding: 10px;
-	transition-duration: 0.2s;
-	cursor: pointer;
-	
-}
-
-#messageButton:hover {
+tr:hover{
 	background-color: navy;
 	color: white;
 }
 
-#messageButtonDate{
-	width: 15%;
-	background-color: transparent;
+th{
 	text-align: left;
-}
-
-#messageButtonSender{
-	width: 20%;
-	text-align: left;
-}
-
-#messageButtonSubject{
-	width: 65%;
-	text-align: left;
-}
-
-#deleteCell{
-	text-align: center;
-	background-color: PowderBlue;
-	padding: 0px;
-}
-
-#deleteButton{
-	width: 100%;
-	height: 100%;
-	border: none;
-	border-radius: 4px;
-	background-color: white;
-	padding: 10px;
-	transition-duration: 0.2s;
-	cursor: pointer;
-}
-
-#deleteButton:hover{
-	background-color: navy;
-	color: white;
-}
-
-#deleteButtonText{
-	background-color: transparent;
-	text-align: center;
+	font-family: "Arial", Gadget, sans-serif;
+	font-weight: bold;
+	font-style: normal;
 	font-variant: small-caps;
+	font-size: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	border-bottom-color: black;
 }
 
-.column{
-	width: 100%;
-	 float: right;
+#select_header{
+	text-align: center;
 }
 
-.nav{
-	width: 20%;
+td{
+	font-family: "Arial", Gadget, sans-serif;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 15px;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	border-bottom-color: gray;
+}
+
+.delete_cell{
+	text-align: center;
+	padding: 0px;
+}
+
+.container{
+	display: grid;
+	grid-template-columns: 200px auto;
+	background-color: WhiteSmoke;
+	margin: 0px;
 	height: 100%;
-	background-color: PowderBlue;
 }
 
-.view{
-	width: 80%;
-	height: 100%;
+#banner {
+	grid-column: 1 / span 2;
 }
 
-#inboxLabel{
-	display:inline-block;
-	margin-left: 20px;
-	margin-right:10px;
+#navigation{
+	grid-column: 1
+	padding-top: 10px;
+	border-right: solid;
+	border-color: #00FFFF;
+	text-align: left;
 }
 
-#inboxCount{
-	display:inline-block;
-	margin-left: 20px;
-	margin-right: 10px;
+#panel{
+	grid-column: 2;
+	overflow: hidden;
 }
 
+.navigation_button{
+	display: grid;
+	grid-template-columns: auto auto;
+	width: 95%;
+	text-align: left;
+	border-style: solid;
+	border-color: #E0FFFF;
+	border-radius: 0px 10px 10px 0px;
+	background-color: #E0FFFF;
+	font-size: 16px;
+	padding-left: 12px;
+	transition-duration: 0.2s;
+	margin-bottom: 10px;
+	cursor: pointer;
+}
 
+.navigation_button:hover{
+	border-color: white;
+	background-color: white;
+	color: black;
+}
 
+.nav_count{
+	display: inline;
+	text-align: right;
+}
+
+.message_body{
+	background-color: white;
+}

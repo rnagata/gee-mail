@@ -6,196 +6,236 @@
     <script>
       window.onload = function(){
 
-      	let messageDetailsMax = 3;
-      	let messageTable = document.getElementById('messageList');
-      	let dateText;
-      	let dateMonth;
-      	let dateDay;
-      	let dateYear;
-      	let inboxButton = document.createElement("BUTTON");
-      	let messageAlreadyOpen = false;
-      	let openMessageBodyRow;
+      	// Streamline, simplify, and condense. Adjust names for more accurate description.
+      	let panelTable = document.getElementById('message_table');
+      	let messageBodyToggle = [];
 
-      	inboxButton.innerHTML = "Inbox";
-      	inboxButton.onclick = function(){DrawTable()};
-      	document.getElementById('inboxButton').appendChild(inboxButton);
-      	document.getElementById('inboxCount').innerHTML = window.geemails.length;
-        window.setInterval(AddNewMail, 30000);
-        DrawMessageTableHeaders();
-        DrawTable();
+      	window.setInterval(NewMessage, 10000);
 
-        function DrawMessageTableHeaders(){
-        	let row = messageTable.insertRow(0);
-        	const dateHeader = document.createElement("TH");
-			const senderHeader = document.createElement("TH");
-			const subjectHeader = document.createElement("TH");
-			const deleteHeader = document.createElement("TH");
-			dateHeader.innerHTML = "Date";
-			senderHeader.innerHTML = "Sender";
-			subjectHeader.innerHTML = "Subject";
-			deleteHeader.innerHTML = " ";
-			dateHeader.id = "dateHeader";
-			senderHeader.id = "senderHeader";
-			subjectHeader.id = "subjectHeader";
-			row.appendChild(dateHeader);
-			row.appendChild(senderHeader);
-			row.appendChild(subjectHeader);
-			row.appendChild(deleteHeader);
-        }
-
-        function DrawTable(){
-        	if (messageTable.rows.length > 1){
-        		console.log("there are " + (messageTable.rows.length-1) + " additional rows");
-        		for (let counter = messageTable.rows.length-1; counter > 0; counter--){
-        			console.log(counter);
-        			messageTable.deleteRow(counter);
-        		}
-        	}
-        	console.log("there are " + geemails.length + " existing mails");
-        	for (let rowCounter = 0; rowCounter < geemails.length; rowCounter++)
+        DrawPanel(4);
+        document.getElementById('inbox').onclick = function(){DrawPanel(4)};
+        document.getElementById('delete').onclick = function(){DeleteMessages()};
+        
+	    function DrawPanel(columns)
+	    {
+	    	if (panelTable.rows.length > 0)
         	{
-    			row = messageTable.insertRow(rowCounter+1);
-    			const messageCell = document.createElement("TD");
-    			const deleteCell = document.createElement("TD");
-    			const messageButton = document.createElement("button");
-    			const deleteButton = document.createElement("button");
-    			dateText = document.createElement("H4");
-    			let senderText = document.createElement("H4");
-    			let subjectText = document.createElement("H4");
-    			let deleteText = document.createElement("H4");
-    			// Adjust Cell details
-    			messageCell.colSpan = 3;
-    			deleteCell.colSpan = 1;
-    			messageCell.id = "messageCell";
-    			deleteCell.id = "deleteCell";
-    			// Adjust Button details
-    			messageButton.onclick = function(){ShowMessageBody(rowCounter, rowCounter+1)};
-    			deleteButton.onclick = function(){EmptyFunction()};
-    			messageButton.id = "messageButton";
-    			deleteButton.id = "deleteButton";
-    			// Adjust Label details
-    			dateText.id = "messageButtonDate";
-    			senderText.id = "messageButtonSender";
-    			subjectText.id = "messageButtonSubject";
-    			deleteText.id = "deleteButtonText";
-    			dateMonth = geemails[rowCounter].date.getMonth();
-    			dateDay = geemails[rowCounter].date.getDate();
-    			dateYear = geemails[rowCounter].date.getFullYear();
-    			console.log(rowCounter);
-    			FormatMessageDate();
-    			//dateText.innerHTML = geemails[rowCounter].date;
-    			senderText.innerHTML = geemails[rowCounter].sender;
-    			subjectText.innerHTML = geemails[rowCounter].subject;
-    			deleteText.innerHTML = "Delete";
-    			// Apply Cell objects
-    			row.appendChild(messageCell);
-    			row.appendChild(deleteCell);
-    			// Apply Button objects
-    			messageCell.appendChild(messageButton);
-    			deleteCell.appendChild(deleteButton);
-    			// Apply Label objects
-    			messageButton.appendChild(dateText);
-    			messageButton.appendChild(senderText);
-    			messageButton.appendChild(subjectText);
-    			deleteButton.appendChild(deleteText);
+        		for (let counter = panelTable.rows.length-1; counter >= 0; counter--)
+        		{
+        			panelTable.deleteRow(counter);
+        		}
+        		messageBodyToggle = [];
         	}
+        	document.getElementsByClassName('nav_count')[0].innerHTML = geemails.length;
+        	for (let count = 0; count < geemails.length; count++){
+        		messageBodyToggle.push(false);
+        	}
+	    	const rowTotal = geemails.length + 1;
+			let cells = [];
+	    	// headers
+	    	const headerRow = panelTable.insertRow(0);
+        	for (let count = 0; count < columns; count++)
+        	{
+        		cells[count] = document.createElement("TH");
+        		cells[count].className = "table_header";
+        		headerRow.appendChild(cells[count]);
+        	}
+        	cells[0].innerHTML = "Date";
+        	cells[1].innerHTML = "Sender";
+        	cells[2].innerHTML = "Subject";
+        	cells[3].innerHTML = "Select";
+        	cells[3].id = "select_header"
+        	// messages
+        	for (let count = 1; count < rowTotal; count++)
+        	{
+        		DrawMessageRow(count, columns);
+        	}
+	    }
+
+	    function DrawMessageRow(position, columns)
+	    {
+		    const row = panelTable.insertRow(position);
+		    let gIndex;
+		    if (position == -1)
+		    {
+		    	gIndex = geemails.length - 1;
+		    } 
+		    else
+		    {
+		    	gIndex = position - 1;
+		    }
+		    //console.log(gIndex);
+		    row.id = "message_" + gIndex.toString();
+	        row.onclick = function(){ShowMessageBody(gIndex, row.id)}
+	        const cells = [];
+	        for (let count = 0; count < columns; count++)
+	        {
+	        	cells[count] = document.createElement("TD");
+	        	cells[count].className = "table_row";
+	        	row.appendChild(cells[count]);
+	        }
+	        cells[0].innerHTML = FormatMessageDate
+        	(
+				geemails[gIndex].date.getMonth(),
+				geemails[gIndex].date.getDate(),
+				geemails[gIndex].date.getFullYear(),
+				geemails[gIndex].date.getHours(),
+				geemails[gIndex].date.getMinutes()
+			);
+			cells[1].innerHTML = geemails[gIndex].sender;
+			cells[2].innerHTML = geemails[gIndex].subject;
+			const checkbox = document.createElement("INPUT");
+			checkbox.type = "checkbox";
+			checkbox.className = "delete_checkbox";
+			checkbox.onclick = function(){HandleCheckboxInput(event)};
+			cells[3].appendChild(checkbox);
+			cells[3].className = "delete_cell"
         }
 
-		function FormatMessageDate(){
-			switch (dateMonth){
-				case 0:
-					dateText.innerHTML = "Jan";
-					break;
-				case 1:
-					dateText.innerHTML = "Feb";
-					break;
-				case 2:
-					dateText.innerHTML = "Mar";
-					break;
-				case 3:
-					dateText.innerHTML = "Apr";
-					break;
-				case 4:
-					dateText.innerHTML = "May";
-					break;
-				case 5:
-					dateText.innerHTML = "Jun";
-					break;
-				case 6:
-					dateText.innerHTML = "Jul";
-					break;
-				case 7:
-					dateText.innerHTML = "Aug";
-					break;
-				case 8:
-					dateText.innerHTML = "Sep";
-					break;
-				case 9:
-					dateText.innerHTML = "Oct";
-					break;
-				case 10:
-					dateText.innerHTML = "Nov";
-					break;
-				case 11:
-					dateText.innerHTML = "Dec";
-					break;
-				default:
-					dateText.innerHTML = "Bad Month";
-					break;
-        	}
-        	dateText.innerHTML += " ";
-        	dateText.innerHTML += dateDay;
-        	dateText.innerHTML += " ";
-        	dateText.innerHTML += dateYear; 
+		function FormatMessageDate(month, day, year, hours, minutes)
+		{
+			let formattedDate;
+			const nowDate = new Date();
+			if (year === nowDate.getFullYear() && month === nowDate.getMonth() && day === nowDate.getDate())
+			{
+				formattedDate = hours.toString(); 
+				if (minutes < 10){
+					formattedDate += ":0";
+					formattedDate += minutes.toString();
+				} else {
+					formattedDate += ":";
+					formattedDate += minutes.toString();
+				}
+				return formattedDate;
+			} 
+			else 
+			{
+				switch (month)
+				{
+					case 0:
+						formattedDate = "Jan";
+						break;
+					case 1:
+						formattedDate = "Feb";
+						break;
+					case 2:
+						formattedDate = "Mar";
+						break;
+					case 3:
+						formattedDate = "Apr";
+						break;
+					case 4:
+						formattedDate = "May";
+						break;
+					case 5:
+						formattedDate = "Jun";
+						break;
+					case 6:
+						formattedDate = "Jul";
+						break;
+					case 7:
+						formattedDate = "Aug";
+						break;
+					case 8:
+						formattedDate = "Sep";
+						break;
+					case 9:
+						formattedDate = "Oct";
+						break;
+					case 10:
+						formattedDate = "Nov";
+						break;
+					case 11:
+						formattedDate = "Dec";
+						break;
+					default:
+						formattedDate = "Bad Month";
+						break;
+	        	}
+	        	formattedDate += " ";
+	        	formattedDate += day;
+	        	formattedDate += ", ";
+	        	formattedDate += year; 
+	        	return formattedDate;
+		    }
 		}
 
-		function ShowMessageBody(gmIndex, trIndex){
-			console.log("messageOpen is: " + messageAlreadyOpen);
-			console.log("requesting message");
-			console.log("contents would be: " + geemails[gmIndex].body);
-			//When no message has been opened
-			if (messageAlreadyOpen === false){
-				let bodyRow = messageTable.insertRow(trIndex+1);
+		function ShowMessageBody(index, messageRowID)
+		{
+			//console.log("called ShowMessageBody");
+			//console.log(messageBodyToggle.length);
+			let x = document.getElementById(messageRowID);
+			if (messageBodyToggle[index] === false)
+			{
+				let bodyRow = panelTable.insertRow(x.rowIndex+1);
+				bodyRow.className = "message_body";
+				bodyRow.id = "message_body_" + index;
 				let singleCell = bodyRow.insertCell(0);
 				singleCell.colSpan = 3;
-				singleCell.innerHTML = geemails[gmIndex].body;
-				openMessageBodyRow = trIndex+1;
-				messageAlreadyOpen = true;
-			} else {
-				let bodyRow = messageTable.deleteRow(openMessageBodyRow);
-				bodyRow = messageTable.insertRow(trIndex+1);
-				let singleCell = bodyRow.insertCell(0);
-				singleCell.colSpan = 3;
-				singleCell.innerHTML = geemails[gmIndex].body;
-				openMessageBodyRow = trIndex+1;
+				singleCell.innerHTML = geemails[index].body;
+				messageBodyToggle[index] = true;
+			} 
+			else 
+			{
+				let y = document.getElementById("message_body_" + index);
+				panelTable.deleteRow(y.rowIndex);
+				messageBodyToggle[index] = false;
 			}
 		}
 
-		function AddNewMail(){
-			let newMessage = getNewMessage();
-			geemails.push(newMessage);
-			document.getElementById('inboxCount').innerHTML = window.geemails.length;
+		function HandleCheckboxInput(event){
+			event.stopPropagation();
 		}
-      };
+
+		function NewMessage()
+		{
+			if (geemails.length < 30)
+			{
+				geemails.push(getNewMessage());
+				messageBodyToggle.push(false);
+				DrawMessageRow(-1, 4);
+				document.getElementsByClassName('nav_count')[0].innerHTML = geemails.length;
+			}
+		}
+
+		function DeleteMessages()
+		{
+			let checkboxes = document.getElementsByClassName('delete_checkbox');
+			let arr = [];
+			for (count = 0; count < checkboxes.length; count++)
+			{
+				if (!checkboxes[count].checked)
+				{
+					arr.push(geemails[count]);
+				}
+			}
+			geemails = arr;
+			document.getElementsByClassName('nav_count')[0].innerHTML = geemails.length;
+			DrawPanel(4);
+		}
+
+    };
     </script>
 	</head>
 	<body>
 		<div class="container" id="main">
-			<div class = "banner">
+			<div id = "banner">
 				<h1>GeeMail</h1>
 			</div>
-			<div class = "bottomRow">
-				<div class = "column view">
-					<table id = "messageList">
-					</table>
-				</div>
-				<div class = "column nav">
-					
-					<div id = "inboxButton"></div>
-					
-					<h3 id = "inboxCount"></h3>
-				</div>
+			<div id = "navigation">
+				<h2>Navigation</h2>
+				<button class = "navigation_button" id = "inbox">
+					Inbox
+					<div class = "nav_count"></div>
+				</button>
+				<button class = "navigation_button" id = "delete">
+					Delete Selected
+				</button>
 			</div>
+			<div id = "panel">
+				<table id = "message_table">
+				</table>
+			</div>	
 		</div>
 	</body>
 </html>
